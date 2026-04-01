@@ -3,10 +3,88 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Timus Networks — SASE Market Survey: Full Results</title>
+<title>Timus Networks — SASE Market Survey</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <style>
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box }
+
+  /* ── Lock Screen ── */
+  body { font-family:'DM Sans',system-ui,sans-serif; background:#0f172a; min-height:100vh }
+  #lock-screen {
+    display:flex; align-items:center; justify-content:center;
+    min-height:100vh; padding:24px;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(37,99,235,0.15), transparent),
+      #0f172a;
+  }
+  .lock-card {
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:16px;
+    padding:48px 40px 40px;
+    width:100%; max-width:400px;
+    backdrop-filter:blur(20px);
+    box-shadow:0 24px 48px rgba(0,0,0,0.4);
+  }
+  .lock-icon {
+    width:48px; height:48px; margin:0 auto 24px;
+    background:rgba(37,99,235,0.15);
+    border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .lock-icon svg { width:24px; height:24px; color:#60a5fa }
+  .lock-card h1 {
+    font-size:20px; font-weight:700; color:#f1f5f9;
+    text-align:center; letter-spacing:-0.02em; margin-bottom:4px
+  }
+  .lock-card p {
+    font-size:13px; color:#64748b; text-align:center; margin-bottom:28px
+  }
+  .lock-card label {
+    display:block; font-size:12px; font-weight:600;
+    color:#94a3b8; margin-bottom:8px; letter-spacing:0.04em; text-transform:uppercase
+  }
+  .input-wrap {
+    position:relative; margin-bottom:20px
+  }
+  .input-wrap input {
+    width:100%; padding:12px 16px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:10px;
+    color:#f1f5f9; font-family:inherit; font-size:15px;
+    outline:none; transition:border-color .2s, box-shadow .2s
+  }
+  .input-wrap input:focus {
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,0.25)
+  }
+  .input-wrap input::placeholder { color:#475569 }
+  #unlock-btn {
+    width:100%; padding:12px;
+    background:#2563eb; color:#fff;
+    border:none; border-radius:10px;
+    font-family:inherit; font-size:15px; font-weight:600;
+    cursor:pointer; transition:background .2s, transform .05s
+  }
+  #unlock-btn:hover { background:#1d4ed8 }
+  #unlock-btn:active { transform:scale(0.98) }
+  .error-msg {
+    color:#f87171; font-size:13px; text-align:center;
+    margin-top:14px; min-height:20px;
+    opacity:0; transition:opacity .3s
+  }
+  .error-msg.visible { opacity:1 }
+  .lock-footer {
+    margin-top:24px; padding-top:16px;
+    border-top:1px solid rgba(255,255,255,0.06);
+    font-size:11px; color:#475569; text-align:center
+  }
+
+  /* ── Dashboard (hidden until unlocked) ── */
+  #dashboard { display:none }
+  #dashboard.visible { display:block }
+  
   *{margin:0;padding:0;box-sizing:border-box}
   body{background:#f8fafc;font-family:'DM Sans',system-ui,sans-serif;color:#0f172a;padding:32px 28px}
   .wrap{max-width:1100px;margin:0 auto}
@@ -57,9 +135,34 @@
   .footer{margin-top:32px;padding:14px 0;border-top:1px solid #e2e8f0;font-size:11px;color:#94a3b8;display:flex;justify-content:space-between}
 
   @media(max-width:768px){.grid{grid-template-columns:1fr}.split{flex-direction:column}}
+
 </style>
 </head>
 <body>
+
+<!-- ═══ LOCK SCREEN ═══ -->
+<div id="lock-screen">
+  <div class="lock-card">
+    <div class="lock-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/>
+      </svg>
+    </div>
+    <h1>Confidential Report</h1>
+    <p>Timus Networks — SASE Market Survey</p>
+    <label for="pw">Password</label>
+    <div class="input-wrap">
+      <input type="password" id="pw" placeholder="Enter access password" autocomplete="off" autofocus/>
+    </div>
+    <button id="unlock-btn">Unlock Dashboard</button>
+    <div class="error-msg" id="err">Incorrect password. Please try again.</div>
+    <div class="lock-footer">Confidential — Level Equity</div>
+  </div>
+</div>
+
+<!-- ═══ DASHBOARD (hidden) ═══ -->
+<div id="dashboard">
+
 <div class="wrap">
   <div style="margin-bottom:32px">
     <div class="sub-note">n = 98 MSP respondents</div>
@@ -409,6 +512,178 @@ stackedH("c22",["Unified Alerting","Unified Agent","Network-Gated Elevation"],[
   {label:"Somewhat Valuable",data:[0,16,20],backgroundColor:"#86efac",barThickness:22},
   {label:"Not Valuable",data:[0,0,5],backgroundColor:"#fca5a5",barThickness:22},
 ]);
+</script>
+
+</div>
+
+<script>
+// SHA-256 hash of the password (plaintext not in source)
+const HASH = "d8310c398ee14a8560cbadf28ec0bfb1c49919a685d0ad788c4e3bb6e869ebbe";
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+async function unlock() {
+  const pw = document.getElementById("pw").value;
+  const hash = await sha256(pw);
+  if (hash === HASH) {
+    document.getElementById("lock-screen").style.display = "none";
+    document.getElementById("dashboard").classList.add("visible");
+    document.body.style.background = "#f8fafc";
+    initCharts();
+  } else {
+    document.getElementById("err").classList.add("visible");
+    document.getElementById("pw").value = "";
+    document.getElementById("pw").focus();
+    setTimeout(() => document.getElementById("err").classList.remove("visible"), 2500);
+  }
+}
+
+document.getElementById("unlock-btn").addEventListener("click", unlock);
+document.getElementById("pw").addEventListener("keydown", e => { if(e.key==="Enter") unlock(); });
+
+function initCharts() {
+  // Load Chart.js dynamically after unlock
+  const s = document.createElement("script");
+  s.src = "https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js";
+  s.onload = () => {
+    
+Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+Chart.defaults.font.size = 12;
+Chart.defaults.color = "#334155";
+Chart.defaults.plugins.legend.display = false;
+Chart.defaults.plugins.tooltip.backgroundColor = "#1e293b";
+Chart.defaults.plugins.tooltip.titleColor = "#f1f5f9";
+Chart.defaults.plugins.tooltip.bodyColor = "#93c5fd";
+Chart.defaults.plugins.tooltip.borderColor = "#334155";
+Chart.defaults.plugins.tooltip.borderWidth = 1;
+Chart.defaults.plugins.tooltip.cornerRadius = 6;
+Chart.defaults.plugins.tooltip.padding = 10;
+
+const BLUE="#2563eb", BLUE_L="#93bbfd", SLATE="#475569", GREEN="#059669", RED="#ef4444";
+
+function hbar(id, labels, data, color, maxVal){
+  const colors = Array.isArray(color) ? color : labels.map(()=>color);
+  new Chart(document.getElementById(id),{
+    type:"bar",
+    data:{labels, datasets:[{data, backgroundColor:colors, borderRadius:4, barThickness:22}]},
+    options:{indexAxis:"y", responsive:true, maintainAspectRatio:false,
+      scales:{
+        x:{max:maxVal||100, grid:{color:"#e2e8f0",drawTicks:false}, ticks:{callback:v=>v+"%",color:"#94a3b8",font:{size:11}}, border:{display:false}},
+        y:{grid:{display:false}, ticks:{color:"#334155",font:{size:12}}, border:{display:false}}
+      },
+      plugins:{tooltip:{callbacks:{label:c=>c.raw+"%"}}}
+    }
+  });
+}
+
+function vbar(id, labels, data, color){
+  const colors = Array.isArray(color) ? color : labels.map(()=>color);
+  new Chart(document.getElementById(id),{
+    type:"bar",
+    data:{labels, datasets:[{data, backgroundColor:colors, borderRadius:4, barThickness:36}]},
+    options:{responsive:true, maintainAspectRatio:false,
+      scales:{
+        y:{grid:{color:"#e2e8f0",drawTicks:false}, ticks:{callback:v=>v+"%",color:"#94a3b8",font:{size:11}}, border:{display:false}},
+        x:{grid:{display:false}, ticks:{color:"#334155",font:{size:11}}, border:{display:false}}
+      },
+      plugins:{tooltip:{callbacks:{label:c=>c.raw+"%"}}}
+    }
+  });
+}
+
+function stackedH(id, labels, datasets){
+  new Chart(document.getElementById(id),{
+    type:"bar",
+    data:{labels, datasets},
+    options:{indexAxis:"y", responsive:true, maintainAspectRatio:false,
+      scales:{
+        x:{stacked:true, grid:{color:"#e2e8f0",drawTicks:false}, ticks:{color:"#94a3b8",font:{size:11}}, border:{display:false}},
+        y:{stacked:true, grid:{display:false}, ticks:{color:"#334155",font:{size:12}}, border:{display:false}}
+      }
+    }
+  });
+}
+
+// 1. Respondent Type
+hbar("c1",["MSP","MSSP","Internal IT / Enterprise","VAR / IT Service Provider","Consulting / Advisory"],[76,9,9,4,2],BLUE);
+
+// 2. MSP Endpoints Managed
+vbar("c2",["<500","500–1K","1K–5K","5K–10K","10K+"],[22,22,39,11,5],SLATE);
+
+// 3. Client Industries
+hbar("c3",["Professional Services","Financial Services","Healthcare / Medical","Manufacturing","Legal","Construction / Engineering","Education","Government / SLED","Retail / Hospitality"],[66,58,54,51,45,45,26,21,21],SLATE);
+
+// 4. PSA / RMM
+hbar("c4",["NinjaOne","ConnectWise","Datto (Autotask / RMM)","Other","Syncro / HaloPSA","Kaseya (BMS / VSA)"],[39,38,31,24,16,15],SLATE);
+
+// 5. Remote Access
+hbar("c5",["Hardware Firewalls / VPNs","SSL VPNs (Cisco AnyConnect)","Identity-Based (MS Entra)","SASE / ZTNA","None / Direct-to-Internet"],[60,45,45,27,8],SLATE);
+
+// 6. Legacy VPN Cost
+vbar("c6",["<$1","$1–2","$2–4","$4–6","$6–8","$8–10","$10–12","$12–14","$14+","Unsure"],[17,15,12,8,6,6,3,0,2,31],
+  ["#cbd5e1","#cbd5e1","#cbd5e1",SLATE,SLATE,SLATE,SLATE,SLATE,SLATE,"#cbd5e1"]);
+
+// 8. Primary SASE Vendor
+hbar("c8",["No Dedicated Platform","Other Vendors","Todyl","Timus Networks","Zscaler","Palo Alto Networks","Cytracom","Sophos","Datto Secure Edge","Twingate","SonicWall"],[28,20,11,9,7,7,5,4,3,3,3],
+  ["#cbd5e1","#cbd5e1","#60a5fa",BLUE,"#cbd5e1","#cbd5e1","#cbd5e1","#cbd5e1","#cbd5e1","#cbd5e1","#cbd5e1"]);
+
+// 9. Barriers
+hbar("c9",["Cost Too High for SMB","Microsoft Entra Sufficient","Client Pushback / Friction","Lack of Education / ROI","Complexity"],[43,34,34,29,22],RED);
+
+// 10. Catalysts
+hbar("c10",["Cyber Insurance Mandates","Client Compliance (CMMC, HIPAA)","Major Security Incident","Vendor Bundling (RMM/PSA)","Operational Pain (VPN Tickets)","End-of-Life Hardware","None / No Plans Regardless"],[59,48,28,19,17,9,3],GREEN);
+
+// 11. Expected Client Base (Area/Line)
+new Chart(document.getElementById("c11"),{
+  type:"line",
+  data:{labels:["6–12 Months","1–2 Years","2–3 Years"],
+    datasets:[{data:[7.1,24.2,40.8],borderColor:BLUE,backgroundColor:"rgba(37,99,235,0.08)",fill:true,borderWidth:3,pointRadius:7,pointBackgroundColor:BLUE,pointBorderColor:"#fff",pointBorderWidth:3,tension:0.3}]},
+  options:{responsive:true, maintainAspectRatio:false,
+    scales:{
+      y:{min:0,max:50,grid:{color:"#e2e8f0",drawTicks:false},ticks:{callback:v=>v+"%",color:"#94a3b8",font:{size:11}},border:{display:false}},
+      x:{grid:{display:false},ticks:{color:"#334155",font:{size:13,weight:500}},border:{display:false}}
+    },
+    plugins:{tooltip:{callbacks:{label:c=>c.raw+"%"}}}
+  }
+});
+
+// 12. Current Endpoint Deployment
+vbar("c12",["<10%","10–25%","26–50%","51–75%","76%+","Internal Only"],[48,25,15,0,10,3],SLATE);
+
+// 16. SASE Cost per Endpoint
+vbar("c16",["$0–5","$5–10","$10–15","$15–20","$20+"],[20,43,25,10,3],
+  ["#cbd5e1",BLUE,BLUE,BLUE,BLUE]);
+
+// 17. Implementation Drivers
+hbar("c17",["Threat Mitigation","Cloud & Remote Shift","Legacy Replacement","Compliance Mandates","Cyber Insurance","Client Demand","Vendor Consolidation"],[70,63,58,48,25,20,18],BLUE);
+
+// 18. Selection Factors
+hbar("c18",["MSP-Native Multi-Tenancy","Competitive Per-User Pricing","High Reliability & Low Latency","Deep Tech Stack Integrations","On-Premise Hardware Coverage","Dedicated Gateways & Static IPs","Single-Agent Consolidation","Rapid Technical Support"],[82,74,44,32,32,29,26,24],BLUE);
+
+// 20. Switching Costs
+hbar("c20",["Rebuilding Network Policies","Internal Retraining","Agent Deployment","Change Management","Contract Lock-In","Stack Integration"],[83,58,55,53,30,23],RED);
+
+// 21. Adoption by Module (stacked)
+stackedH("c21",["SASE / ZTNA Agent","Hardware Bridge","PAM Integration","Multi-Tenant Portal"],[
+  {label:"Currently Adopt",data:[34,15,7,31],backgroundColor:BLUE,barThickness:22},
+  {label:"Plan to Adopt",data:[13,9,4,0],backgroundColor:BLUE_L,barThickness:22},
+  {label:"No Plans",data:[17,2,0,0],backgroundColor:"#fca5a5",barThickness:22},
+  {label:"Not Sure",data:[3,0,0,0],backgroundColor:"#e2e8f0",barThickness:22},
+]);
+
+// 22. SASE+PAM Value (stacked)
+stackedH("c22",["Unified Alerting","Unified Agent","Network-Gated Elevation"],[
+  {label:"Very Valuable",data:[22,18,15],backgroundColor:GREEN,barThickness:22},
+  {label:"Somewhat Valuable",data:[0,16,20],backgroundColor:"#86efac",barThickness:22},
+  {label:"Not Valuable",data:[0,0,5],backgroundColor:"#fca5a5",barThickness:22},
+]);
+
+  };
+  document.head.appendChild(s);
+}
 </script>
 </body>
 </html>
